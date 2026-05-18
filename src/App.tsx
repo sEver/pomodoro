@@ -1,6 +1,6 @@
 import { Fragment } from 'react'
 import { TimerBar } from './components/TimerBar'
-import { TimerRing } from './components/TimerRing'
+// import { TimerRing } from './components/TimerRing'
 import { usePomodoro, type PomodoroMode } from './hooks/usePomodoro'
 import {
   playChime,
