@@ -1,121 +1,79 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
+import { TimerRing } from './components/TimerRing'
+import { usePomodoro, type PomodoroMode } from './hooks/usePomodoro'
 import './App.css'
 
+const MODE_LABELS = {
+  focus: 'Focus',
+  shortBreak: 'Short break',
+  longBreak: 'Long break',
+} satisfies Record<PomodoroMode, string>
+
 function App() {
-  const [count, setCount] = useState(0)
+  const {
+    mode,
+    secondsLeft,
+    totalSeconds,
+    progress,
+    isRunning,
+    completedPomodoros,
+    start,
+    pause,
+    reset,
+    selectMode,
+  } = usePomodoro()
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
+    <div className="app" data-mode={mode}>
+      <header className="header">
+        <h1>Pomodoro</h1>
+        <p className="subtitle">
+          {completedPomodoros === 0
+            ? 'Stay focused, take breaks'
+            : `${completedPomodoros} session${completedPomodoros === 1 ? '' : 's'} completed`}
+        </p>
+      </header>
+
+      <nav className="modes" aria-label="Timer mode">
+        {(Object.keys(MODE_LABELS) as PomodoroMode[]).map((m) => (
+          <button
+            key={m}
+            type="button"
+            className={`mode-btn${mode === m ? ' active' : ''}`}
+            onClick={() => selectMode(m)}
+            disabled={isRunning}
+          >
+            {MODE_LABELS[m]}
+          </button>
+        ))}
+      </nav>
+
+      <TimerRing
+        secondsLeft={secondsLeft}
+        progress={progress}
+        label={MODE_LABELS[mode]}
+      />
+
+      <div className="controls">
         <button
           type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
+          className="btn btn-primary"
+          onClick={isRunning ? pause : start}
         >
-          Count is {count}
+          {isRunning ? 'Pause' : secondsLeft < totalSeconds ? 'Resume' : 'Start'}
         </button>
-      </section>
+        <button type="button" className="btn btn-secondary" onClick={reset}>
+          Reset
+        </button>
+      </div>
 
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
+      <footer className="hint">
+        {mode === 'focus'
+          ? '25 min focus → 5 min break (15 min after 4 sessions)'
+          : mode === 'shortBreak'
+            ? 'Short break — stretch, hydrate, rest your eyes'
+            : 'Long break — you earned it'}
+      </footer>
+    </div>
   )
 }
 
