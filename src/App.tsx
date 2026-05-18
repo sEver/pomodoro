@@ -1,3 +1,5 @@
+import { Fragment } from 'react'
+import { TimerBar } from './components/TimerBar'
 import { TimerRing } from './components/TimerRing'
 import { usePomodoro, type PomodoroMode } from './hooks/usePomodoro'
 import './App.css'
@@ -47,11 +49,20 @@ function App() {
         ))}
       </nav>
 
-      <TimerRing
+      <div className="timer-displays">
+        {/* <TimerRing
         secondsLeft={secondsLeft}
         progress={progress}
         label={MODE_LABELS[mode]}
-      />
+        /> */}
+        <TimerBar
+          progress={progress}
+          secondsLeft={secondsLeft}
+          label={MODE_LABELS[mode]}
+          width="95%"
+          height="100px"
+        />
+      </div>
 
       <div className="controls">
         <button
