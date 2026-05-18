@@ -1,4 +1,4 @@
-import { formatTime } from '../hooks/usePomodoro'
+import { formatTime } from '../utils/formatTime'
 import './TimerRing.css'
 
 const RADIUS = 120
