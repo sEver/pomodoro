@@ -5,7 +5,7 @@ import {
   playShortBreakEndChime,
 } from '../utils/playChime'
 
-const MINUTE = 1
+const MINUTE = 60
 const MODE_DURATIONS = {
   focus: 25 * MINUTE,
   shortBreak: 5 * MINUTE,
