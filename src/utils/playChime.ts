@@ -3,8 +3,14 @@ const TOMATO_NOTES = [261.63, 293.66, 329.63, 349.23] as const
 
 export type TomatoNoteIndex = 0 | 1 | 2 | 3
 
-/** C D E F E D C F — up, down, then a little lift at the end. */
-const FINAL_MELODY: TomatoNoteIndex[] = [0, 1, 2, 3, 2, 1, 0, 3]
+/** Reset + focus complete: up, down, lift. */
+const FOCUS_END_MELODY: TomatoNoteIndex[] = [3, 2, 1, 0, 3, 2, 1, 0]
+
+/** Short break complete: gentle descent. */
+const SHORT_BREAK_END_MELODY: TomatoNoteIndex[] = [0, 1, 2, 3, 0, 1, 2, 3]
+
+/** Long break complete: brighter “back to work” phrase. */
+const LONG_BREAK_END_MELODY: TomatoNoteIndex[] = [0, 0, 1, 1, 2, 2, 3, 3]
 
 const NOTE_GAP_SEC = 0.2
 const NOTE_LENGTH_SEC = 0.4
@@ -25,6 +31,18 @@ function scheduleNote(
   osc.stop(startTime + NOTE_LENGTH_SEC)
 }
 
+function playMelody(melody: readonly TomatoNoteIndex[]) {
+  try {
+    const ctx = new AudioContext()
+    const t0 = ctx.currentTime
+    melody.forEach((noteIndex, i) => {
+      scheduleNote(ctx, noteIndex, t0 + i * NOTE_GAP_SEC)
+    })
+  } catch {
+    // Audio not available
+  }
+}
+
 export function playChime(noteIndex: TomatoNoteIndex = 0) {
   try {
     const ctx = new AudioContext()
@@ -35,13 +53,17 @@ export function playChime(noteIndex: TomatoNoteIndex = 0) {
 }
 
 export function playFinalChime() {
-  try {
-    const ctx = new AudioContext()
-    const t0 = ctx.currentTime
-    FINAL_MELODY.forEach((noteIndex, i) => {
-      scheduleNote(ctx, noteIndex, t0 + i * NOTE_GAP_SEC)
-    })
-  } catch {
-    // Audio not available
-  }
+  playMelody(FOCUS_END_MELODY)
+}
+
+export function playFocusEndChime() {
+  playMelody(FOCUS_END_MELODY)
+}
+
+export function playShortBreakEndChime() {
+  playMelody(SHORT_BREAK_END_MELODY)
+}
+
+export function playLongBreakEndChime() {
+  playMelody(LONG_BREAK_END_MELODY)
 }

@@ -1,10 +1,15 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { playChime } from '../utils/playChime'
+import {
+  playFocusEndChime,
+  playLongBreakEndChime,
+  playShortBreakEndChime,
+} from '../utils/playChime'
 
+const MINUTE = 1
 const MODE_DURATIONS = {
-  focus: 25 * 60,
-  shortBreak: 5 * 60,
-  longBreak: 15 * 60,
+  focus: 25 * MINUTE,
+  shortBreak: 5 * MINUTE,
+  longBreak: 15 * MINUTE,
 } as const
 
 export type PomodoroMode = keyof typeof MODE_DURATIONS
@@ -29,7 +34,14 @@ export function usePomodoro() {
   }, [])
 
   const handleSessionEnd = useCallback(() => {
-    playChime(3)
+    if (mode === 'focus') {
+      playFocusEndChime()
+    } else if (mode === 'shortBreak') {
+      playShortBreakEndChime()
+    } else {
+      playLongBreakEndChime()
+    }
+
     setIsRunning(false)
     endTimeRef.current = null
 
