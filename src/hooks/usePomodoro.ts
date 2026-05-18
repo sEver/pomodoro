@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { playChime } from '../utils/playChime'
 
 const MODE_DURATIONS = {
   focus: 25 * 60,
@@ -9,23 +10,6 @@ const MODE_DURATIONS = {
 export type PomodoroMode = keyof typeof MODE_DURATIONS
 
 const POMODOROS_BEFORE_LONG = 4
-
-function playChime() {
-  try {
-    const ctx = new AudioContext()
-    const osc = ctx.createOscillator()
-    const gain = ctx.createGain()
-    osc.connect(gain)
-    gain.connect(ctx.destination)
-    osc.frequency.value = 880
-    gain.gain.setValueAtTime(0.15, ctx.currentTime)
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4)
-    osc.start(ctx.currentTime)
-    osc.stop(ctx.currentTime + 0.4)
-  } catch {
-    // Audio not available
-  }
-}
 
 export function usePomodoro() {
   const [mode, setMode] = useState<PomodoroMode>('focus')

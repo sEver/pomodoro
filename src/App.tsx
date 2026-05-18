@@ -2,6 +2,7 @@ import { Fragment } from 'react'
 import { TimerBar } from './components/TimerBar'
 import { TimerRing } from './components/TimerRing'
 import { usePomodoro, type PomodoroMode } from './hooks/usePomodoro'
+import { playChime } from './utils/playChime'
 import './App.css'
 
 const MODE_LABELS = {
@@ -27,7 +28,22 @@ function App() {
   return (
     <div className="app" data-mode={mode}>
       <header className="header">
-        <h1>Pomodoro</h1>
+        <h1 className="title">
+          {(['P', 'm', 'd', 'r'] as const).map((letter, index) => (
+            <Fragment key={letter}>
+              {letter}
+              <button
+                type="button"
+                className="tomato-btn"
+                style={{ animationDelay: `${index * 0.50}s` }}
+                onClick={playChime}
+                aria-label="Play chime"
+              >
+                🍅
+              </button>
+            </Fragment>
+          ))}
+        </h1>
         <p className="subtitle">
           {completedPomodoros === 0
             ? 'Stay focused, take breaks'
@@ -51,9 +67,9 @@ function App() {
 
       <div className="timer-displays">
         {/* <TimerRing
-        secondsLeft={secondsLeft}
-        progress={progress}
-        label={MODE_LABELS[mode]}
+          secondsLeft={secondsLeft}
+          progress={progress}
+          label={MODE_LABELS[mode]}
         /> */}
         <TimerBar
           progress={progress}
