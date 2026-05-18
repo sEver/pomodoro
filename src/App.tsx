@@ -68,21 +68,13 @@ function App() {
           </button>
         ))}
       </nav>
-
-      <div className="timer-displays">
-        {/* <TimerRing
-          secondsLeft={secondsLeft}
-          progress={progress}
-          label={MODE_LABELS[mode]}
-        /> */}
-        <TimerBar
-          progress={progress}
-          secondsLeft={secondsLeft}
-          label={MODE_LABELS[mode]}
-          width="95%"
-          height="100px"
-        />
-      </div>
+      <footer className="hint">
+        {mode === 'focus'
+          ? '25 min focus, then 5 min break (15 min after 4 sessions)'
+          : mode === 'shortBreak'
+            ? 'Short break - stretch, hydrate, rest your eyes'
+            : 'Long break - take a walk'}
+      </footer>
 
       <div className="controls">
         <button
@@ -112,13 +104,25 @@ function App() {
         </button>
       </div>
 
-      <footer className="hint">
-        {mode === 'focus'
-          ? '25 min focus, then 5 min break (15 min after 4 sessions)'
-          : mode === 'shortBreak'
-            ? 'Short break - stretch, hydrate, rest your eyes'
-            : 'Long break - take a walk'}
-      </footer>
+      <div className="timer-displays">
+        {/* <TimerRing
+          secondsLeft={secondsLeft}
+          progress={progress}
+          label={MODE_LABELS[mode]}
+        /> */}
+        <TimerBar
+          progress={progress}
+          secondsLeft={secondsLeft}
+          label={MODE_LABELS[mode]}
+          width="95%"
+          height="100px"
+        />
+      </div>
+
+      <label className="layout-toggle" title="Align to bottom">
+        <input type="checkbox" />
+        <span role="img" aria-label="weight">⬇️</span>
+      </label>
     </div>
   )
 }
