@@ -114,10 +114,10 @@ function App() {
 
       <footer className="hint">
         {mode === 'focus'
-          ? '25 min focus → 5 min break (15 min after 4 sessions)'
+          ? '25 min focus, then 5 min break (15 min after 4 sessions)'
           : mode === 'shortBreak'
-            ? 'Short break — stretch, hydrate, rest your eyes'
-            : 'Long break — you earned it'}
+            ? 'Short break - stretch, hydrate, rest your eyes'
+            : 'Long break - take a walk'}
       </footer>
     </div>
   )
