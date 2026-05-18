@@ -2,7 +2,11 @@ import { Fragment } from 'react'
 import { TimerBar } from './components/TimerBar'
 import { TimerRing } from './components/TimerRing'
 import { usePomodoro, type PomodoroMode } from './hooks/usePomodoro'
-import { playChime, type TomatoNoteIndex } from './utils/playChime'
+import {
+  playChime,
+  playFinalChime,
+  type TomatoNoteIndex,
+} from './utils/playChime'
 import './App.css'
 
 const MODE_LABELS = {
@@ -88,7 +92,14 @@ function App() {
         >
           {isRunning ? 'Pause' : secondsLeft < totalSeconds ? 'Resume' : 'Start'}
         </button>
-        <button type="button" className="btn btn-secondary" onClick={reset}>
+        <button
+          type="button"
+          className="btn btn-secondary"
+          onClick={() => {
+            reset()
+            playFinalChime()
+          }}
+        >
           Reset
         </button>
       </div>
