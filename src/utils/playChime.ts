@@ -3,7 +3,10 @@ const TOMATO_NOTES = [261.63, 293.66, 329.63, 349.23] as const
 
 export type TomatoNoteIndex = 0 | 1 | 2 | 3
 
-/** Reset + focus complete: up, down, lift. */
+/** Reset button: quick two-note chime. */
+const RESET_CHIME: TomatoNoteIndex[] = [2, 1]
+
+/** Focus complete: up, down, lift. */
 const FOCUS_END_MELODY: TomatoNoteIndex[] = [3, 2, 1, 0, 3, 2, 1, 0]
 
 /** Short break complete: gentle descent. */
@@ -52,8 +55,8 @@ export function playChime(noteIndex: TomatoNoteIndex = 0) {
   }
 }
 
-export function playFinalChime() {
-  playMelody(FOCUS_END_MELODY)
+export function playResetChime() {
+  playMelody(RESET_CHIME)
 }
 
 export function playFocusEndChime() {

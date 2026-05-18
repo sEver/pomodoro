@@ -4,7 +4,7 @@ import { TimerRing } from './components/TimerRing'
 import { usePomodoro, type PomodoroMode } from './hooks/usePomodoro'
 import {
   playChime,
-  playFinalChime,
+  playResetChime,
   type TomatoNoteIndex,
 } from './utils/playChime'
 import './App.css'
@@ -88,7 +88,15 @@ function App() {
         <button
           type="button"
           className="btn btn-primary"
-          onClick={isRunning ? pause : start}
+          onClick={() => {
+            if (isRunning) {
+              playChime(0)
+              pause()
+            } else {
+              playChime(3)
+              start()
+            }
+          }}
         >
           {isRunning ? 'Pause' : secondsLeft < totalSeconds ? 'Resume' : 'Start'}
         </button>
@@ -97,7 +105,7 @@ function App() {
           className="btn btn-secondary"
           onClick={() => {
             reset()
-            playFinalChime()
+            playResetChime()
           }}
         >
           Reset
