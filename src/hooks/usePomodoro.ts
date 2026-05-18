@@ -29,7 +29,7 @@ export function usePomodoro() {
   }, [])
 
   const handleSessionEnd = useCallback(() => {
-    playChime()
+    playChime(3)
     setIsRunning(false)
     endTimeRef.current = null
 

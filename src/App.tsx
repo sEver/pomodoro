@@ -2,7 +2,7 @@ import { Fragment } from 'react'
 import { TimerBar } from './components/TimerBar'
 import { TimerRing } from './components/TimerRing'
 import { usePomodoro, type PomodoroMode } from './hooks/usePomodoro'
-import { playChime } from './utils/playChime'
+import { playChime, type TomatoNoteIndex } from './utils/playChime'
 import './App.css'
 
 const MODE_LABELS = {
@@ -36,7 +36,7 @@ function App() {
                 type="button"
                 className="tomato-btn"
                 style={{ animationDelay: `${index * 0.50}s` }}
-                onClick={playChime}
+                onClick={() => playChime(index as TomatoNoteIndex)}
                 aria-label="Play chime"
               >
                 🍅
