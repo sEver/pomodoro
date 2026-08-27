@@ -1,4 +1,4 @@
-import { Fragment } from 'react'
+import { Fragment, useEffect } from 'react'
 import { TimerBar } from './components/TimerBar'
 // import { TimerRing } from './components/TimerRing'
 import { usePomodoro, type PomodoroMode } from './hooks/usePomodoro'
@@ -22,12 +22,23 @@ function App() {
     totalSeconds,
     progress,
     isRunning,
+    isSessionComplete,
     completedPomodoros,
     start,
     pause,
     reset,
     selectMode,
   } = usePomodoro()
+
+  useEffect(() => {
+    const favicon = document.querySelector<HTMLLinkElement>('#favicon')
+    if (!favicon) return
+
+    const emoji = isSessionComplete ? '✅' : '🍅'
+    const icon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">${emoji}</text></svg>`
+
+    favicon.href = `data:image/svg+xml,${icon}`
+  }, [isSessionComplete])
 
   return (
     <div className="app" data-mode={mode}>

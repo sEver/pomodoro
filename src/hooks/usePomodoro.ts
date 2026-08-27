@@ -21,6 +21,7 @@ export function usePomodoro() {
   const [secondsLeft, setSecondsLeft] = useState(MODE_DURATIONS.focus)
   const [isRunning, setIsRunning] = useState(false)
   const [completedPomodoros, setCompletedPomodoros] = useState(0)
+  const [isSessionComplete, setIsSessionComplete] = useState(false)
   const endTimeRef = useRef<number | null>(null)
 
   const totalSeconds = MODE_DURATIONS[mode]
@@ -30,6 +31,7 @@ export function usePomodoro() {
     setMode(next)
     setSecondsLeft(MODE_DURATIONS[next])
     setIsRunning(false)
+    setIsSessionComplete(false)
     endTimeRef.current = null
   }, [])
 
@@ -43,6 +45,7 @@ export function usePomodoro() {
     }
 
     setIsRunning(false)
+    setIsSessionComplete(true)
     endTimeRef.current = null
 
     if (mode === 'focus') {
@@ -78,6 +81,7 @@ export function usePomodoro() {
 
   const start = useCallback(() => {
     endTimeRef.current = Date.now() + secondsLeft * 1000
+    setIsSessionComplete(false)
     setIsRunning(true)
   }, [secondsLeft])
 
@@ -88,6 +92,7 @@ export function usePomodoro() {
 
   const reset = useCallback(() => {
     setIsRunning(false)
+    setIsSessionComplete(false)
     endTimeRef.current = null
     setSecondsLeft(MODE_DURATIONS[mode])
   }, [mode])
@@ -105,6 +110,7 @@ export function usePomodoro() {
     totalSeconds,
     progress,
     isRunning,
+    isSessionComplete,
     completedPomodoros,
     start,
     pause,
