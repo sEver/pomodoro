@@ -32,6 +32,9 @@ function App() {
   } = usePomodoro()
 
   const baseTitle = useRef(document.title)
+  // At session end the hook has already switched to the NEXT mode, so the
+  // word describes what the user is about to start, not what just finished.
+  const waitingWord = mode === 'focus' ? 'WORK' : 'BREAK'
 
   useEffect(() => {
     const favicon = document.querySelector<HTMLLinkElement>('#favicon')
@@ -44,8 +47,33 @@ function App() {
   }, [isSessionComplete])
 
   useEffect(() => {
-    document.title = `${baseTitle.current} · ${formatTime(secondsLeft)}`
-  }, [secondsLeft])
+    const base = baseTitle.current
+
+    // Fresh load (or a reset): nothing started, nothing to show in the suffix.
+    if (!isRunning && !isSessionComplete && secondsLeft === totalSeconds) {
+      document.title = base
+      return
+    }
+
+    if (!isSessionComplete) {
+      document.title = `${base} · ${formatTime(secondsLeft)}`
+      return
+    }
+
+    // Blink the word in the title on a 1-second timer, in place of the next
+    // timer's countdown, until the user starts it.
+    let isVisible = true
+    const renderTitle = () => {
+      document.title = isVisible ? `${base} · ${waitingWord}` : base
+    }
+
+    renderTitle()
+    const id = window.setInterval(() => {
+      isVisible = !isVisible
+      renderTitle()
+    }, 1000)
+    return () => window.clearInterval(id)
+  }, [secondsLeft, totalSeconds, isRunning, isSessionComplete, waitingWord])
 
   return (
     <div className="app" data-mode={mode}>
