@@ -1,4 +1,4 @@
-import { Fragment, useEffect } from 'react'
+import { Fragment, useEffect, useRef } from 'react'
 import { TimerBar } from './components/TimerBar'
 // import { TimerRing } from './components/TimerRing'
 import { usePomodoro, type PomodoroMode } from './hooks/usePomodoro'
@@ -7,6 +7,7 @@ import {
   playResetChime,
   type TomatoNoteIndex,
 } from './utils/playChime'
+import { formatTime } from './utils/formatTime'
 import './App.css'
 
 const MODE_LABELS = {
@@ -30,6 +31,8 @@ function App() {
     selectMode,
   } = usePomodoro()
 
+  const baseTitle = useRef(document.title)
+
   useEffect(() => {
     const favicon = document.querySelector<HTMLLinkElement>('#favicon')
     if (!favicon) return
@@ -39,6 +42,10 @@ function App() {
 
     favicon.href = `data:image/svg+xml,${icon}`
   }, [isSessionComplete])
+
+  useEffect(() => {
+    document.title = `${baseTitle.current} · ${formatTime(secondsLeft)}`
+  }, [secondsLeft])
 
   return (
     <div className="app" data-mode={mode}>
