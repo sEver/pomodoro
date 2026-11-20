@@ -15,14 +15,39 @@ const MODE_DURATIONS = {
 export type PomodoroMode = keyof typeof MODE_DURATIONS
 
 const POMODOROS_BEFORE_LONG = 4
+const COMPLETED_POMODOROS_KEY = 'COMPLETED_POMODOROS_KEY'
+
+function loadCompletedPomodoros(): number {
+  try {
+    const completedPomodoros = Number(
+      window.localStorage.getItem(COMPLETED_POMODOROS_KEY),
+    )
+    return Number.isInteger(completedPomodoros) && completedPomodoros >= 0
+      ? completedPomodoros
+      : 0
+  } catch {
+    return 0
+  }
+}
 
 export function usePomodoro() {
   const [mode, setMode] = useState<PomodoroMode>('focus')
   const [secondsLeft, setSecondsLeft] = useState(MODE_DURATIONS.focus)
   const [isRunning, setIsRunning] = useState(false)
-  const [completedPomodoros, setCompletedPomodoros] = useState(0)
+  const [completedPomodoros, setCompletedPomodoros] = useState(loadCompletedPomodoros)
   const [isSessionComplete, setIsSessionComplete] = useState(false)
   const endTimeRef = useRef<number | null>(null)
+
+  useEffect(() => {
+    try {
+      window.localStorage.setItem(
+        COMPLETED_POMODOROS_KEY,
+        String(completedPomodoros),
+      )
+    } catch {
+      // Ignore storage failures (disabled storage, quota, etc.).
+    }
+  }, [completedPomodoros])
 
   const totalSeconds = MODE_DURATIONS[mode]
   const progress = 1 - secondsLeft / totalSeconds
@@ -93,6 +118,7 @@ export function usePomodoro() {
   const reset = useCallback(() => {
     setIsRunning(false)
     setIsSessionComplete(false)
+    setCompletedPomodoros(0)
     endTimeRef.current = null
     setSecondsLeft(MODE_DURATIONS[mode])
   }, [mode])
